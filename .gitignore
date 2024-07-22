@@ -1,5 +1,8 @@
 tmpCode
 target/
+.DS_Store
+mvnw
+mvnw.cmd
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
