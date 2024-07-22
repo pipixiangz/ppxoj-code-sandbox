@@ -2,13 +2,15 @@ package com.ppx.ppxojcodesandbox;
 
 import com.ppx.ppxojcodesandbox.model.ExecuteCodeRequest;
 import com.ppx.ppxojcodesandbox.model.ExecuteCodeResponse;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 
 /**
  * Java 原生代码沙箱实现（可以直接复用模板方法）
  */
-public class JavaCodeSandbox extends JavaCodeSandboxTemplate {
+@Component
+public class JavaNativeCodeSandbox extends JavaCodeSandboxTemplate {
 
     // 覆盖父类的方法
     @Override

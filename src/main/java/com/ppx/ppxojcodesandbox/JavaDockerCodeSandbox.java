@@ -17,6 +17,7 @@ import com.ppx.ppxojcodesandbox.model.ExecuteCodeResponse;
 import com.ppx.ppxojcodesandbox.model.ExecuteMessage;
 import com.ppx.ppxojcodesandbox.model.JudgeInfo;
 import com.ppx.ppxojcodesandbox.utils.ProcessUtils;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.io.Closeable;
@@ -28,8 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-public class JavaDockerCodeSandbox extends JavaCodeSandbox {
+@Component
+public class JavaDockerCodeSandbox extends JavaCodeSandboxTemplate {
 
     // 代码执行超时时间
     private static final long TIME_OUT = 5000L;
