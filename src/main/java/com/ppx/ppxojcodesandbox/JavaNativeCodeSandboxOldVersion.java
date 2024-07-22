@@ -11,17 +11,16 @@ import com.ppx.ppxojcodesandbox.model.ExecuteMessage;
 import com.ppx.ppxojcodesandbox.model.JudgeInfo;
 import com.ppx.ppxojcodesandbox.utils.ProcessUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
-public class JavaNativeCodeSandbox implements CodeSandbox {
+public class JavaNativeCodeSandboxOldVersion implements CodeSandbox {
 
     private static final String GLOBAL_CODE_DIR_NAME = "tmpCode";
 
@@ -48,7 +47,7 @@ public class JavaNativeCodeSandbox implements CodeSandbox {
 
     public static void main(String[] args) {
         // 测试代码
-        JavaNativeCodeSandbox javaNativeCodeSandbox = new JavaNativeCodeSandbox();
+        JavaNativeCodeSandboxOldVersion javaNativeCodeSandbox = new JavaNativeCodeSandboxOldVersion();
         ExecuteCodeRequest executeCodeRequest = new ExecuteCodeRequest();
         executeCodeRequest.setInputList(Arrays.asList("1 2", "3 4"));
         // 读取测试代码
