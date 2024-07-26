@@ -13,7 +13,7 @@ Spring Boot + Spring Cloud Microservices + Docker (+ Vue 3 + Arco Design)
 
 Frontend: Administrators can create and manage problems, while users can freely search for problems, read problem statements, write and submit code.
 
-项目前端Front-end：[项目前端](https://github.com/pipixiangz/ppxoj-code-sandbox)
+项目前端Front-end：[项目前端](https://github.com/pipixiangz/ppxoj-frontend)
 
 Backend: The system can compile, run, and judge the correctness of the code based on test cases set by the administrators in a self-implemented code sandbox. 
 
