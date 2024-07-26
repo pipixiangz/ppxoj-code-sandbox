@@ -47,3 +47,45 @@ Backend: The system can compile, run, and judge the correctness of the code base
 13. 为保护内部服务接口，给接口路径统一设置 inner 前缀，并通过在网关自定义GlobalFilter（全局请求拦截器）实现对内部请求的检测和拦截，集中解决了权限校验问题。
 
 14. 为防止判题操作执行时间较长，系统选用异步的方式，在题目服务中将用户提交id发送给RabbitMQ消息队列，并通过Direct交换机转发给判题队列，由判题服务进行消费，异步更新提交状态。相比于同步，响应时长由5秒减少至2秒。
+
+### System Architecture
+The system is divided into distinct modules based on functional responsibilities: the backend module handles core business logic, the judging module verifies results, and the reusable code sandbox module compiles and executes code. Each module operates independently and collaborates via API interfaces and package-based integration.
+
+### Project Stability and Modularization
+To ensure stability across the project's modules, Spring Cloud Alibaba was chosen to refactor the monolithic project. The system is divided into services such as user service, problem service, judging service, and a common module. Redis is used for distributed session storage to manage logged-in user information.
+
+### Judging Machine Module Design
+A custom architecture for the judging machine module was designed, defining abstract interfaces for the code sandbox and various implementation classes (e.g., remote/local code sandboxes). Flexible invocation of different code sandboxes was achieved through a combination of the static factory pattern and Spring configuration.
+
+### Enhanced Code Sandbox Interface
+The proxy pattern was employed to enhance the capabilities of the code sandbox interface, standardizing pre- and post-invocation logging to reduce redundant code.
+
+### Java Program Compilation and Execution
+The exec method of the Java Runtime object was used to compile and execute Java programs. Execution results were obtained through the Process class’s input stream, realizing a native Java code sandbox.
+
+### Code Sandbox Testing and Optimization
+Custom Java scripts were written to test the code sandbox, simulating various program exceptions and addressing issues accordingly. For instance, a daemon thread and Thread.sleep mechanism were used for process timeout interruption, JVM -Xmx parameter was set to limit the maximum heap memory usage, and sensitive operations were restricted using a whitelist/blacklist and trie structure.
+
+### Security Enhancements
+A Java Security Manager and a custom Security Manager were used to enforce permission control on user-submitted code, such as disabling file write and execution permissions, enhancing the security of the code sandbox.
+
+### Docker-Based Isolation
+To ensure the stability of the sandbox host, Docker was used to isolate user code. The Docker Java library was utilized to create containers for isolated code execution, with parameters passed through tty and Docker, resulting in a more secure code sandbox.
+
+### Development Environment
+An Ubuntu Linux + Docker environment was set up on a virtual machine, with JetBrains Client used for real-time SSH remote development, improving development efficiency.
+
+### Template Method Pattern
+Given the identical process flow for both native Java and Docker code sandboxes (compilation, execution, output retrieval, cleanup), the template method pattern was adopted to define a standard process, allowing subclasses to extend specific parts of the process. This improved code consistency and significantly reduced redundant code.
+
+### API Security
+To prevent malicious requests to the code sandbox service, signature-based API authentication was implemented. A signature key was assigned to each caller, and requests were validated through the request header key to ensure secure API calls.
+
+### Service Aggregation and Routing
+Spring Cloud Gateway was used to aggregate and route service interfaces, protecting services while simplifying client calls (the frontend does not need to request services on different ports based on business logic). A custom CorsWebFilter Bean globally resolved cross-origin issues.
+
+### Internal Service Protection
+To protect internal service interfaces, a unified inner prefix was set for interface paths. A custom GlobalFilter (global request interceptor) in the gateway was implemented to detect and intercept internal requests, centralizing permission verification.
+
+### Asynchronous Judging Operations
+To prevent prolonged execution times for judging operations, the system employs an asynchronous approach. The problem service sends the user submission ID to a RabbitMQ message queue, forwarding it via a Direct exchange to the judging queue, where the judging service consumes it and updates the submission status asynchronously. Compared to the synchronous approach, the response time was reduced from 5 seconds to 2 seconds.
