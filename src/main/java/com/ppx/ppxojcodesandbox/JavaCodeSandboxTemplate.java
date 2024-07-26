@@ -13,6 +13,7 @@ import com.ppx.ppxojcodesandbox.model.ExecuteMessage;
 import com.ppx.ppxojcodesandbox.model.JudgeInfo;
 import com.ppx.ppxojcodesandbox.utils.ProcessUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.StopWatch;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -87,12 +88,14 @@ public abstract class JavaCodeSandboxTemplate implements CodeSandbox{
      */
     public List<ExecuteMessage> runFile(File userCodeFile, List<String> inputList) {
         String userCodeParentPath = userCodeFile.getParentFile().getAbsolutePath();
-
+        long time = 0L;
         List<ExecuteMessage> executeMessageList = new ArrayList<>();
         for (String inputArgs : inputList) {
+            StopWatch stopWatch = new StopWatch();
             String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s Main %s", userCodeParentPath, inputArgs);
             //String runCmd = String.format("java -Xmx256m -Dfile.encoding=UTF-8 -cp %s:%s -Djava.security.manager=%s Main %s", userCodeParentPath, SECURITY_MANAGER_PATH, SECURITY_MANAGER_CLASS_NAME, inputArgs);
             try {
+                stopWatch.start();
                 Process runProcess = Runtime.getRuntime().exec(runCmd);
                 // 超时控制
                 boolean finished = runProcess.waitFor(TIME_OUT, TimeUnit.MILLISECONDS);
@@ -102,6 +105,9 @@ public abstract class JavaCodeSandboxTemplate implements CodeSandbox{
                 }
                 ExecuteMessage executeMessage = ProcessUtils.runProcessAndGetMessage(runProcess, "运行");
                 System.out.println(executeMessage);
+                stopWatch.stop();
+                time = stopWatch.getLastTaskTimeMillis();
+                executeMessage.setTime(time);
                 executeMessageList.add(executeMessage);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -143,6 +149,7 @@ public abstract class JavaCodeSandboxTemplate implements CodeSandbox{
         executeCodeResponse.setOutputList(outputList);
         JudgeInfo judgeInfo = new JudgeInfo();
         judgeInfo.setTime(maxTime);
+        log.info("maxTime = {}", maxTime);
         executeCodeResponse.setJudgeInfo(judgeInfo);
         return executeCodeResponse;
     }
