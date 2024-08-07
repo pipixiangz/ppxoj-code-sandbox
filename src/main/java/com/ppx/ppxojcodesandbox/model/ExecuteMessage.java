@@ -1,11 +1,17 @@
 package com.ppx.ppxojcodesandbox.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 进程执行信息
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ExecuteMessage {
 
     // 程序退出码

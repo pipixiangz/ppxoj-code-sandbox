@@ -21,6 +21,7 @@ public class MainController {
 
     private static final String AUTH_REQUEST_SECRET = "secretKey";
 
+    // 暂时全部都使用java原生代码沙箱
     @Resource
     private JavaNativeCodeSandbox javaNativeCodeSandBox;
 
@@ -47,7 +48,7 @@ public class MainController {
         if (executeCodeRequest == null){
             throw new RuntimeException("请求参数为空！ExecuteCodeRequest is null");
         }
+        // 执行native沙箱
         return javaNativeCodeSandBox.executeCode(executeCodeRequest);
-
     }
 }
